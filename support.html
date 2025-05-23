@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>112 Softphone Dəstək Forması (HTML Demo)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    form label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+    form input[type="text"], form textarea, form select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+    }
+    form input[type="submit"] {
+      margin-top: 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    form input[type="submit"]:hover {
+      background: #0056b3;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .entry {
+      background: #eee;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>112 Softphone Dəstək Forması (HTML Demo)</h2>
+
+    <form id="supportForm">
+      <label for="operator">Operator Adı:</label>
+      <input type="text" id="operator" name="operator" required />
+
+      <label for="problem">Problem Təsviri:</label>
+      <textarea id="problem" name="problem" rows="4" required></textarea>
+
+      <label for="priority">Prioritet:</label>
+      <select id="priority" name="priority" required>
+        <option value="yuksək">Yüksək</option>
+        <option value="orta">Orta</option>
+        <option value="asaği">Aşağı</option>
+      </select>
+
+      <label for="status">Status:</label>
+      <select id="status" name="status">
+        <option value="gozlemede">Gözləmədə</option>
+        <option value="hell_edildi">Həll edildi</option>
+        <option value="arashdirmada">Araşdırmada</option>
+      </select>
+
+      <input type="submit" value="Göndər" />
+    </form>
+
+    <h2>Müraciətlər</h2>
+    <div id="entries"></div>
+  </div>
+
+  <script>
+    // Müraciətləri localStorage-dan yüklə
+    const entriesDiv = document.getElementById('entries');
+    const form = document.getElementById('supportForm');
+
+    function loadEntries() {
+      const entries = JSON.parse(localStorage.getItem('supportEntries') || '[]');
+      entriesDiv.innerHTML = '';
+      if (entries.length === 0) {
+        entriesDiv.textContent = 'Heç bir müraciət yoxdur.';
+        return;
+      }
+      entries.forEach((entry, i) => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.textContent = 
+          `Operator: ${entry.operator}\n` +
+          `Problem: ${entry.problem}\n` +
+          `Prioritet: ${entry.priority}\n` +
+          `Status: ${entry.status}`;
+        entriesDiv.appendChild(div);
+      });
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const newEntry = {
+        operator: form.operator.value.trim(),
+        problem: form.problem.value.trim(),
+        priority: form.priority.value,
+        status: form.status.value
+      };
+
+      if (!newEntry.operator || !newEntry.problem) {
+        alert('Operator və Problem sahələri boş ola bilməz!');
+        return;
+      }
+
+      const entries = JSON.parse(localStorage.getItem('supportEntries') || '[]');
+      entries.push(newEntry);
+      localStorage.setItem('supportEntries', JSON.stringify(entries));
+
+      loadEntries();
+      form.reset();
+    });
+
+    loadEntries();
+  </script>
+</body>
+</html>
